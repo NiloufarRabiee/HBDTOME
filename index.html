@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101923">
+<meta name="description" content="SIGNAL_001 — Some messages are meant to be discovered.">
+<meta property="og:title" content="SIGNAL_001 / 16.10">
+<meta property="og:description" content="Some messages are meant to be discovered.">
+<title>SIGNAL_001 / 16.10</title>
+<style>
+:root{color-scheme:dark;--bg:#0b121b;--surface:#111b25;--head:#172831;--border:#38505e;--mute:#738d9a;--mint:#9df3db;--text:#cce1dc}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 20%,#142634,#080d14 75%);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:clamp(12px,2.5vw,26px);display:flex;justify-content:center;align-items:center}
+.terminal{width:min(920px,100%);min-height:min(700px,calc(100dvh - 26px));background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 28px 85px #0008}
+.top{height:51px;background:var(--head);display:flex;align-items:center;gap:9px;padding:0 24px}
+.dot{height:12px;width:12px;border-radius:50%;background:#cc8ebc}.dot:nth-child(2){background:#bec8b7}.dot:nth-child(3){background:#a6cfc5}
+.brand{margin-left:32px;font-size:14px;letter-spacing:.045em}.right{margin-left:auto;color:var(--mute);font-size:12px}
+.inner{padding:20px clamp(18px,5vw,48px) 36px}
+.receiver{font-size:12px;color:var(--mute);border-bottom:1px solid #2d4551;padding:3px 8px 13px}.receiver span{margin-left:26px}
+.status{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-top:31px;color:var(--mint);font-size:clamp(14px,2vw,17px);letter-spacing:.035em;min-height:26px}
+.spinner{width:12px;height:12px;display:inline-block;border:2px dotted var(--mint);border-radius:50%;animation:spin 1s linear infinite}
+.freq{color:var(--mute);font-size:13px;margin-top:24px}
+.progress{width:220px;max-width:100%;height:2px;background:#26404c;margin-top:15px;overflow:hidden}.bar{height:100%;width:0;background:var(--mint);box-shadow:0 0 13px var(--mint);transition:width .3s}
+.found{display:none;color:var(--mint);margin-top:36px;letter-spacing:.14em;font-size:15px;text-shadow:0 0 18px #59e1b84d}.found.visible{display:block}
+.message{white-space:pre-wrap;overflow-wrap:anywhere;font-size:clamp(13px,1.5vw,16px);line-height:1.8;min-height:190px;margin-top:20px;color:#dbeee8}
+.cursor{display:inline-block;width:8px;height:1.1em;background:var(--mint);vertical-align:middle;animation:blink .8s steps(1,end) infinite}
+.footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:26px;opacity:0;transition:opacity .6s;pointer-events:none}.footer.ready{opacity:1;pointer-events:auto}
+.note{font-size:12px;color:var(--mute)}
+button{color:var(--mint);font:inherit;font-size:12px;border:1px solid #37746a;border-radius:7px;background:#173036;padding:12px 16px;cursor:pointer}button:focus-visible{outline:2px solid white;outline-offset:3px}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes blink{50%{opacity:0}}
+@media(max-width:600px){body{padding:10px;align-items:stretch}.terminal{min-height:calc(100dvh - 20px);border-radius:16px}.top{padding:0 15px}.dot{width:10px;height:10px}.brand{margin-left:10px;font-size:11px}.right{font-size:10px}.inner{padding:18px}.receiver{font-size:11px}.receiver span{margin-left:6px}.freq{font-size:11px}.message{font-size:12.5px;line-height:1.7}}
+@media(prefers-reduced-motion:reduce){.spinner,.cursor{animation:none}.bar{transition:none}}
+</style>
+</head>
+<body>
+<main class="terminal" aria-label="Signal receiver">
+<header class="top"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="brand">SIGNAL_001 &nbsp;/&nbsp; 16.10</span><span class="right">● LIVE</span></header>
+<div class="inner">
+<div class="receiver">RECEIVER <span>[ 16 : 10 ]</span></div>
+<div class="status" role="status"><span id="status">SEARCHING FOR SIGNAL</span><span class="spinner" id="spinner" aria-hidden="true"></span></div>
+<div class="freq" id="freq">frequency: 16.10 &nbsp; • &nbsp; decoding...</div>
+<div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
+<div id="found" class="found">✧ &nbsp;SIGNAL FOUND</div>
+<div id="message" class="message" aria-label="Decoded message"></div>
+<div id="footer" class="footer"><span class="note">✦ 16.10 / END OF TRANSMISSION</span><button id="replay" type="button">↻ REPLAY SIGNAL</button></div>
+</div>
+</main>
+<script>
+'use strict';
+// Encoded message is decoded entirely in the viewer's browser.
+const packets=[
+"RHNBRGgsEfSA1b2BfUlA5pWEaE8ZybtwPuytb2uArWMQj51r05E90Iw3m24UwzvAcO2B",
+"AbM8oGPIX9hMnimqNsAFmPpHx2+f9lGtHCvCPZnZcwC0IE+EvRRzu/gwTIHRpBJPn6fH",
+"XTFWdtS628P+XA0wNV4RSE9zPXxzTEdWFU0UCxOr0tbzh2xJbxvxtpUyQHDti39z+aZo",
+"Lff+OArBmCy+kSP+nj+eGh64T4FoCoY650raSIV9xXnKS8BdryzwYJ3kXuU7jvdW+/VD",
+"tAxI+cVhnckReqy/KVCc3gFlZ5Hc+C9dd8fA4q4RPyRAeCWXh7ui4MPMjae5vqz+i593",
+"YkFaNBep0qrGZEu3Awg="
+];
+const el=id=>document.getElementById(id);
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let run=0;
+function decode(){
+ const bytes=atob(packets.join(''));
+ const data=Uint8Array.from(bytes,(c,i)=>c.charCodeAt(0)^((16+10*i+(i*i%251))&255));
+ return new TextDecoder('utf-8',{fatal:true}).decode(data);
+}
+async function play(){
+ const token=++run;
+ el('status').textContent='SEARCHING FOR SIGNAL';
+ el('spinner').style.display='inline-block';
+ el('freq').textContent='frequency: 16.10   •   decoding...';
+ el('bar').style.width='0%';
+ el('found').classList.remove('visible');
+ el('message').replaceChildren();
+ el('footer').classList.remove('ready');
+ await sleep(reduced?100:850);if(token!==run)return;
+ el('bar').style.width='28%';
+ el('freq').textContent='frequency: 16.10   •   synchronizing...';
+ await sleep(reduced?100:900);if(token!==run)return;
+ el('bar').style.width='73%';el('status').textContent='DECODING TRANSMISSION';
+ await sleep(reduced?100:750);if(token!==run)return;
+ el('bar').style.width='100%';el('spinner').style.display='none';
+ el('status').textContent='CONNECTION ESTABLISHED';
+ el('freq').textContent='frequency: 16.10   •   signal verified';
+ el('found').classList.add('visible');
+ await sleep(reduced?100:350);if(token!==run)return;
+ let message;try{message=decode()}catch(e){el('message').textContent='SIGNAL CORRUPTED';return}
+ if(reduced){el('message').textContent=message}
+ else{
+  const content=document.createElement('span');
+  const cursor=document.createElement('span');
+  cursor.className='cursor';cursor.setAttribute('aria-hidden','true');
+  el('message').append(content,cursor);
+  for(let i=0;i<message.length;i++){
+   if(token!==run)return;
+   content.textContent+=message[i];
+   await sleep(message[i]==='\n'?70:17);
+  }
+  cursor.remove();
+ }
+ if(token===run)el('footer').classList.add('ready');
+}
+el('replay').addEventListener('click',play);
+play();
+</script>
+</body>
+</html>
