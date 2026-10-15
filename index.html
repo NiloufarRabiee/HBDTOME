@@ -28,7 +28,7 @@ body{background:radial-gradient(ellipse at 50% 20%,#142634,#080d14 75%);color:va
 .cursor{display:inline-block;width:8px;height:1.1em;background:var(--mint);vertical-align:middle;animation:blink .8s steps(1,end) infinite}
 .footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:26px;opacity:0;transition:opacity .6s;pointer-events:none}.footer.ready{opacity:1;pointer-events:auto}
 .note{font-size:12px;color:var(--mute)}
-button{color:var(--mint);font:inherit;font-size:12px;border:1px solid #37746a;border-radius:7px;background:#173036;padding:12px 16px;cursor:pointer}button:focus-visible{outline:2px solid white;outline-offset:3px}
+button,.reply{color:var(--mint);font:inherit;font-size:12px;border:1px solid #37746a;border-radius:7px;background:#173036;padding:12px 16px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px}.reply{background:#1b574b;border-color:#62bfa7;color:#eafff8;font-weight:700}.actions{display:flex;gap:10px;flex-wrap:wrap}button:focus-visible,.reply:focus-visible{outline:2px solid white;outline-offset:3px}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes blink{50%{opacity:0}}
 @media(max-width:600px){body{padding:10px;align-items:stretch}.terminal{min-height:calc(100dvh - 20px);border-radius:16px}.top{padding:0 15px}.dot{width:10px;height:10px}.brand{margin-left:10px;font-size:11px}.right{font-size:10px}.inner{padding:18px}.receiver{font-size:11px}.receiver span{margin-left:6px}.freq{font-size:11px}.message{font-size:12.5px;line-height:1.7}}
 @media(prefers-reduced-motion:reduce){.spinner,.cursor{animation:none}.bar{transition:none}}
@@ -44,7 +44,7 @@ button{color:var(--mint);font:inherit;font-size:12px;border:1px solid #37746a;bo
 <div class="progress" aria-hidden="true"><div id="bar" class="bar"></div></div>
 <div id="found" class="found">✧ &nbsp;SIGNAL FOUND</div>
 <div id="message" class="message" aria-label="Decoded message"></div>
-<div id="footer" class="footer"><span class="note">✦ 16.10 / END OF TRANSMISSION</span><button id="replay" type="button">↻ REPLAY SIGNAL</button></div>
+<div id="footer" class="footer"><span class="note">✦ 16.10 / END OF TRANSMISSION</span><div class="actions"><button id="replay" type="button" aria-label="Replay the signal">↻ REPLAY SIGNAL</button><a class="reply" href="https://www.linkedin.com/in/niloufar-rabiee-55447325a/" target="_blank" rel="noopener noreferrer" aria-label="Open Niloufar Rabiee LinkedIn profile to send a birthday wish">↗ REPLY ON LINKEDIN</a></div></div>
 </div>
 </main>
 <script>
